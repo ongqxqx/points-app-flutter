@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "944968193026",
+    "project_id": "project-points-30449",
+    "storage_bucket": "project-points-30449.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944968193026:android:15e57fdf2dc5c0637b831b",
+        "android_client_info": {
+          "package_name": "com.example.admin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "944968193026-5lmudta4kshpkujcjj6oocc22mc8lke8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.admin_app",
+            "certificate_hash": "f82db0003982bfd0f942d22e214d196cd061e94b"
+          }
+        },
+        {
+          "client_id": "944968193026-2uel8atu8rnbvrk7j8me3aov76k5ircq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp6TELA5_QZuPYI-Ln5v03iy8Lvr16LDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "944968193026-2uel8atu8rnbvrk7j8me3aov76k5ircq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "944968193026-fmvv4jvur5m8mctb9h7scvgcgit8dij8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.points"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944968193026:android:a614498e3dafba487b831b",
+        "android_client_info": {
+          "package_name": "com.example.points"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "944968193026-iuh919oir1h17344codt76986tjjk9k0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.points",
+            "certificate_hash": "79eeaf2ce4bf70e87b2baf08157868c1c898748e"
+          }
+        },
+        {
+          "client_id": "944968193026-2uel8atu8rnbvrk7j8me3aov76k5ircq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp6TELA5_QZuPYI-Ln5v03iy8Lvr16LDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "944968193026-2uel8atu8rnbvrk7j8me3aov76k5ircq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "944968193026-fmvv4jvur5m8mctb9h7scvgcgit8dij8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.points"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

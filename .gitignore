@@ -1,0 +1,30 @@
+# Flutter/Dart specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+pubspec.lock
+*.dart_tool/
+*.pub/
+*.swp
+*.apk
+
+# Android specific
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/local.properties
+
+# iOS specific
+ios/Flutter/.symlinks/
+ios/Pods/
+ios/Runner/GoogleService-Info.plist
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
