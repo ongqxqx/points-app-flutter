@@ -14,16 +14,17 @@ class _HomeMyPointState extends State<HomeMyPoint> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // Create a stream that listens to the 'point' field in the user's document
   Stream<int> getPointStream() {
     String? userId = _auth.currentUser?.uid;
     if (userId == null) {
-      return Stream.value(0);
+      return Stream.value(0); // Return a stream with a default value of 0 if no user is logged in
     }
     return _firestore
         .collection('user_list')
         .doc(userId)
         .snapshots()
-        .map((snapshot) => snapshot.data()?['point'] as int? ?? 0);
+        .map((snapshot) => snapshot.data()?['point'] as int? ?? 0); // Map the document data to the 'point' field
   }
 
   @override
@@ -44,7 +45,7 @@ class _HomeMyPointState extends State<HomeMyPoint> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'myPoints'.tr,
+            'myPoints'.tr, // Display the translated 'myPoints' text
             style: TextStyle(color: Colors.white),
           ),
           Expanded(
@@ -54,18 +55,18 @@ class _HomeMyPointState extends State<HomeMyPoint> {
                 stream: getPointStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator(color: Colors.white);
+                    return const CircularProgressIndicator(color: Colors.white); // Show a loading indicator while waiting for data
                   }
                   if (snapshot.hasError) {
-                    return Text('Error', style: TextStyle(color: Colors.white));
+                    return Text('Error', style: TextStyle(color: Colors.white)); // Show an error message if there is an error
                   }
                   final user = FirebaseAuth.instance.currentUser;
                   String pointsText;
 
                   if (user == null || user.isAnonymous) {
-                    pointsText = '--';
+                    pointsText = '--'; // Display '--' if user is not logged in or is anonymous
                   } else {
-                    int points = snapshot.data ?? 0; // 处理 null 值的情况
+                    int points = snapshot.data ?? 0; // Handle null values by defaulting to 0
                     pointsText = points.toString();
                   }
 

@@ -12,24 +12,26 @@ class QRCodeScanner extends StatefulWidget {
 
 class _QRCodeScannerState extends State<QRCodeScanner> {
   MobileScannerController cameraController = MobileScannerController();
-  bool _scanned = false;
+  bool _scanned = false; // Flag to prevent multiple scans
 
+  // Method to handle QR code scanning
   void _handleQRCode(String qrCode) async {
-    if (_scanned) return;
+    if (_scanned) return; // Prevent multiple scans
 
     setState(() {
-      _scanned = true;
+      _scanned = true; // Set the flag to true to prevent re-scanning
     });
 
-    cameraController.stop(); // 确保扫描停止
+    cameraController.stop(); // Stop the camera scanning
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.isAnonymous) {
-      _showLoginDialog();
+      _showLoginDialog(); // Prompt the user to log in
       return;
     }
 
     try {
+      // Fetch QR code document from Firestore
       final qrCodeDoc = await FirebaseFirestore.instance
           .collection('qr_code_list')
           .doc(qrCode)
@@ -41,7 +43,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
         );
         setState(() {
           _scanned = false;
-          cameraController.start(); // 重新启动扫描
+          cameraController.start(); // Restart scanning
         });
         return;
       }
@@ -51,15 +53,17 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       final point = data['point'];
 
       if (active != null && active.isNotEmpty) {
-        _showScannedDialog();
+        _showScannedDialog(); // Show dialog if QR code is already used
         return;
       }
 
+      // Update QR code document with the user's ID
       await FirebaseFirestore.instance
           .collection('qr_code_list')
           .doc(qrCode)
           .update({'active': user.uid});
 
+      // Fetch and update the user's points
       final userDoc = await FirebaseFirestore.instance
           .collection('user_list')
           .doc(user.uid)
@@ -74,7 +78,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
           .doc(user.uid)
           .update({'point': newPoints});
 
-      // 显示成功领取点数的对话框
+      // Show success dialog with points received
       _showSuccessDialog(point);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,11 +86,12 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       );
       setState(() {
         _scanned = false;
-        cameraController.start(); // 重新启动扫描
+        cameraController.start(); // Restart scanning in case of error
       });
     }
   }
 
+  // Show dialog to prompt user to log in
   void _showLoginDialog() {
     showDialog(
       context: context,
@@ -99,7 +104,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
               child: Text('Login'),
               onPressed: () {
                 Navigator.of(context).pop();
-                // 导航到登录页面或执行登录操作
+                // Navigate to login page or perform login operation
               },
             ),
           ],
@@ -108,11 +113,12 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
     ).then((_) {
       setState(() {
         _scanned = false;
-        cameraController.start(); // 重新启动扫描
+        cameraController.start(); // Restart scanning after dialog is dismissed
       });
     });
   }
 
+  // Show dialog indicating successful points redemption
   void _showSuccessDialog(int points) {
     showDialog(
       context: context,
@@ -124,10 +130,10 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(
-                    0xFFF26101), // Change this to your desired button color
+                    0xFFF26101), // Set the button color
               ),
               onPressed: () {
-                Get.offAll(() => MainPage());
+                Get.offAll(() => MainPage()); // Navigate to the main page
               },
               child: Text(
                 'OK',
@@ -147,6 +153,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
     });
   }
 
+  // Show dialog if the QR code has already been used
   void _showScannedDialog() {
     showDialog(
       context: context,
@@ -159,7 +166,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
               child: Text('Back'),
               onPressed: () {
                 Navigator.of(context).pop();
-                // 可以在此处导航到其他页面
+                // Optionally navigate to another page
               },
             ),
           ],
@@ -168,7 +175,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
     ).then((_) {
       setState(() {
         _scanned = false;
-        cameraController.start(); // 重新启动扫描
+        cameraController.start(); // Restart scanning after dialog is dismissed
       });
     });
   }
@@ -176,6 +183,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Uncomment if you want an AppBar
       // appBar: AppBar(
       //   title: Text('QR Code Scanner'),
       // ),
@@ -185,8 +193,8 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
           final List<Barcode> barcodes = capture.barcodes;
           for (final barcode in barcodes) {
             final String code = barcode.rawValue ?? '---';
-            _handleQRCode(code);
-            break; // 只处理第一个检测到的二维码
+            _handleQRCode(code); // Handle the QR code
+            break; // Process only the first detected QR code
           }
         },
       ),

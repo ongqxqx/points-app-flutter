@@ -63,7 +63,6 @@ class _SignInWithEmailDartState extends State<SignInWithEmailDart> {
                     Spacer(),
                     TextButton(
                       onPressed: () {
-                        // 处理忘记密码逻辑
                       },
                       child: const Text('Forget password?'),
                     ),
@@ -76,7 +75,6 @@ class _SignInWithEmailDartState extends State<SignInWithEmailDart> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // 处理登录逻辑
                         }
                       },
                       child: Text('Sign In'),

@@ -7,12 +7,11 @@ class HomeNotificationIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.notifications_none,color: Color(0xFFF26101),),
+      icon: const Icon(Icons.notifications_none, color: Color(0xFFF26101)), // Notification icon with custom color
       onPressed: () {
-        // 在点击时导航到通知列表页面
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const AccountNotificationScreen()),
+          MaterialPageRoute(builder: (context) => const AccountNotificationScreen()), // Navigate to notification screen on press
         );
       },
     );

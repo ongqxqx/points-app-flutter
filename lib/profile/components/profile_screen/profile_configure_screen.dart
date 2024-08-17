@@ -19,7 +19,9 @@ class ProfileConfigureScreen extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16), // 设置按钮内部的垂直填充
+                  padding: EdgeInsets.symmetric(vertical: 16), // Set vertical padding for the button
+                  backgroundColor: Color(0xFFF26101), // Button background color
+                  foregroundColor: Color(0xFFFFFFFF), // Button text color
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -28,19 +30,21 @@ class ProfileConfigureScreen extends StatelessWidget {
                         builder: (context) => AccountSettingScreen()),
                   );
                 },
-                child: Text('accountSetting'.tr),
+                child: Text('accountSetting'.tr), // Translated text for account settings
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 10), // Add space between buttons
         Row(
           children: [
-            // 用来在两个按钮之间添加间距
+            // Button for app settings (currently not functional)
             Expanded(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16), // 设置按钮内部的垂直填充
+                  padding: EdgeInsets.symmetric(vertical: 16), // Set vertical padding for the button
+                  backgroundColor: Color(0xFFF26101), // Button background color
+                  foregroundColor: Color(0xFFFFFFFF), // Button text color
                 ),
                 onPressed: () {
                   // Navigator.push(
@@ -48,12 +52,12 @@ class ProfileConfigureScreen extends StatelessWidget {
                   //   MaterialPageRoute(builder: (context) => SettingScreen()),
                   // );
                 },
-                child: Text('appSetting'.tr),
+                child: Text('appSetting'.tr), // Translated text for app settings
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10), // 添加上下间距
+        const SizedBox(height: 10), // Add space between buttons
         Row(
           children: [
             Expanded(
@@ -61,23 +65,35 @@ class ProfileConfigureScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 1),
                 height: 50,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(24),
+                  color: Color(0xFFF26101), // Background color for the dropdown when not expanded
+                  border: Border.all(color: Color(0xFFF26101)), // Border color for the dropdown
+                  borderRadius: BorderRadius.circular(24), // Border radius for the dropdown
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     isExpanded: true,
-                    value: Get.locale?.languageCode ?? 'en',
-                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                    iconSize: 0,
-                    style: TextStyle(color: Colors.deepPurple, fontSize: 16),
-                    //dropdownColor: Colors.white,
+                    value: Get.locale?.languageCode ?? 'en', // Current locale language code
+                    //icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                    icon: SizedBox.shrink(), // Hide the default dropdown icon
+                    //iconSize: 0,
+                    style: TextStyle(color: Color(0xFFF26101), fontSize: 16),
+                    dropdownColor: Color(0xFFF26101), // Background color of the dropdown menu
+                    // Items for the dropdown menu, populated from TranslationService
                     items: TranslationService.langs.map((String lang) {
                       return DropdownMenuItem<String>(
                         value: TranslationService
                             .locales[TranslationService.langs.indexOf(lang)]
                             .languageCode,
-                        child: Center(child: Text(lang)),
+                        //child: Center(child: Text(lang)), // Display language in dropdown
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center, // Center align items horizontally
+                          children: [
+                            Icon(Icons.language, color: Colors.white), // Language icon
+                            SizedBox(width: 8),
+                            //Text('$lang'),
+                            Text('$lang', style: TextStyle(color: Colors.white)), // Text color in dropdown
+                          ],
+                        ),
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
@@ -95,20 +111,22 @@ class ProfileConfigureScreen extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10), // 添加上下间距
+        const SizedBox(height: 10), // Add space between buttons
         Row(
           children: [
             Expanded(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16), // 设置按钮内部的垂直填充
+                  padding: EdgeInsets.symmetric(vertical: 16), // Set vertical padding for the button
+                  backgroundColor: Color(0xFFF26101), // Button background color
+                  foregroundColor: Color(0xFFFFFFFF), // Button text color
                 ),
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  await GoogleSignIn().signOut();
-                  Get.offAll(() => MainPage()); // 跳转到主页
+                  await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+                  await GoogleSignIn().signOut(); // Sign out from Google
+                  Get.offAll(() => MainPage()); // Navigate to the main page
                   Fluttertoast.showToast(
-                    msg: 'signOutSuccessful'.tr,
+                    msg: 'signOutSuccessful'.tr, // Translated sign out success message
                     toastLength: Toast.LENGTH_LONG,
                     gravity: ToastGravity.CENTER,
                     backgroundColor: Colors.green,
@@ -116,7 +134,7 @@ class ProfileConfigureScreen extends StatelessWidget {
                     fontSize: 16.0,
                   );
                 },
-                child: Text('signOut'.tr),
+                child: Text('signOut'.tr), // Translated text for sign out button
               ),
             ),
           ],

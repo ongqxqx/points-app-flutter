@@ -14,9 +14,8 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // 直接退出应用程序
-        SystemNavigator.pop();
-        return false;
+        SystemNavigator.pop(); // Exit the app on back button press
+        return false; // Prevent default back button action
       },
       child: Scaffold(
         body: Center(
@@ -29,13 +28,14 @@ class OnboardingScreen extends StatelessWidget {
                   FirstTimeUserDialog.show(
                     context,
                     onComplete: (bool createAccount) {
-                      onCompleted(createAccount);
+                      onCompleted(createAccount); // Pass the result to onCompleted
                     },
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Color(0xFFF26101),    // 设置按钮前景色（文本颜色）
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12), // 按钮的内边距
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFFF26101), // Button background color
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 child: Text(
                   'getStarted'.tr,
@@ -47,11 +47,12 @@ class OnboardingScreen extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Get.to(() => OnboardingSignInUpScreen());
+                  Get.to(() => OnboardingSignInUpScreen()); // Navigate to sign-in/up screen
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Color(0xFFF26101),    // 设置按钮前景色（文本颜色）
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12), // 按钮的内边距
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFFF26101), // Button background color
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 child: Text(
                   'signIn'.tr,
@@ -63,8 +64,8 @@ class OnboardingScreen extends StatelessWidget {
               Spacer(),
               DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  value: Get.locale?.languageCode ?? 'en',
-                  icon: SizedBox.shrink(), //Icon(Icons.language, color: Color(0xFFF26101)),
+                  value: Get.locale?.languageCode ?? 'en', // Current language code
+                  icon: SizedBox.shrink(), // Hide the default dropdown icon
                   style: TextStyle(color: Color(0xFFF26101), fontSize: 16),
                   items: TranslationService.langs.map((String lang) {
                     return DropdownMenuItem<String>(
@@ -73,8 +74,8 @@ class OnboardingScreen extends StatelessWidget {
                           .languageCode,
                       child: Row(
                         children: [
-                          Icon(Icons.language, color: Color(0xFFF26101)), // 可选：添加图标
-                          SizedBox(width: 8), // 在文本和图标之间添加8像素的间距
+                          Icon(Icons.language, color: Color(0xFFF26101)), // Language icon
+                          SizedBox(width: 8),
                           Text('$lang'),
                         ],
                       ),
@@ -85,7 +86,7 @@ class OnboardingScreen extends StatelessWidget {
                       TranslationService().changeLocale(
                         TranslationService.langs[TranslationService.locales
                             .indexWhere((locale) => locale.languageCode == newValue)],
-                      );
+                      ); // Change app language
                     }
                   },
                 ),

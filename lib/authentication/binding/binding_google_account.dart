@@ -7,36 +7,38 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BindAccount {
+  // Function to link the current Firebase user with a Google account.
   static Future<bool> linkWithGoogleAccount() async {
     try {
-      // 断开之前的Google登录连接
+      // Disconnect any previous Google sign-in.
       await GoogleSignIn().disconnect();
 
-      // 触发 Google 登录流程
+      // Trigger the Google sign-in process.
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        return false; // 用户取消了登录
+        return false; // User canceled the login.
       }
 
+      // Get the authentication details from the Google account.
       final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      await googleUser.authentication;
 
-      // 使用 Google 凭据创建 AuthCredential
+      // Create an AuthCredential using the Google authentication details.
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // 将 Google 凭据链接到现有用户
+      // Link the Google credentials to the current Firebase user.
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         await user.linkWithCredential(credential);
 
-        // 重新获取用户信息
+        // Reload the user to get updated information.
         await user.reload();
         final User? updatedUser = FirebaseAuth.instance.currentUser;
 
-        // 更新 Firestore 中的用户信息
+        // Update the user's information in Firestore.
         if (updatedUser != null) {
           await FirebaseFirestore.instance
               .collection('user_list')
@@ -45,6 +47,7 @@ class BindAccount {
             'email': updatedUser.email,
           });
 
+          // Show a success message using FlutterToast.
           Fluttertoast.showToast(
             msg: 'linkedWithGoogleAccountSuccessfully'.tr,
             toastLength: Toast.LENGTH_LONG,
@@ -55,12 +58,13 @@ class BindAccount {
           );
           return true;
         } else {
-          return false; // 重新获取用户信息失败
+          return false; // Failed to reload the user.
         }
       } else {
-        return false; // 没有找到用户
+        return false; // No user found.
       }
     } catch (e) {
+      // Show an error message using FlutterToast in case of an exception.
       Fluttertoast.showToast(
         msg: e.toString(),
         toastLength: Toast.LENGTH_LONG,
@@ -77,25 +81,29 @@ class BindAccount {
 class BindingGoogleAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Builds the UI that attempts to link the Google account and provides feedback to the user.
     return FutureBuilder<bool>(
       future: BindAccount.linkWithGoogleAccount(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
+              // Display the title for the binding process.
               title: Text('bindingGoogleAccount'.tr),
             ),
             body: Center(
+              // Show a loading indicator while the Google account is being linked.
               child: CircularProgressIndicator(),
             ),
           );
         } else {
+          // Close the current screen and return the result of the linking process.
           if (snapshot.hasData && snapshot.data == true) {
             Get.back(result: true);
           } else {
             Get.back(result: false);
           }
-          return SizedBox.shrink();
+          return SizedBox.shrink(); // Return an empty widget after navigation.
         }
       },
     );

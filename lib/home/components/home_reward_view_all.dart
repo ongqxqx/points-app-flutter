@@ -11,16 +11,16 @@ class HomeRewardViewAll extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const ProductScreen()),
+          MaterialPageRoute(builder: (context) => const ProductScreen()), // Navigate to ProductScreen
         );
       },
       child: Text(
-        'viewAll'.tr + '\u2192',
+        'viewAll'.tr + '\u2192', // Translated 'viewAll' text with arrow
         style: TextStyle(
-          fontFamily: 'Roboto',
-          fontSize: 14,
-          color: Color(0xFFF26101),
-          fontWeight: FontWeight.bold,
+          fontFamily: 'Roboto', // Font family for text
+          fontSize: 14, // Font size for text
+          color: Color(0xFFF26101), // Text color
+          fontWeight: FontWeight.bold, // Text weight
         ),
       ),
     );

@@ -11,19 +11,18 @@ import 'components/home_my_point.dart';
 import 'components/home_my_reward.dart';
 
 class HomeScreen extends StatefulWidget {
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin<HomeScreen> {
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true; // Keeps the state of this screen when navigating away
 
   Future<void> _refresh() async {
-    // 在这里添加你的刷新逻辑
-    await Future.delayed(Duration(seconds: 1)); // 模拟网络请求延迟
-    Get.forceAppUpdate();  // 这将强制应用程序的所有页面刷新
+    await Future.delayed(Duration(seconds: 1)); // Simulates a refresh delay
+    Get.forceAppUpdate(); // Forces a rebuild of the app to reflect any updates
+    // Uncomment below if using BottomNavigationScreen to update current page
     // BottomNavigationScreen.mainPageKey.currentState?.setState(() {
     //   BottomNavigationScreen.mainPageKey.currentState?.updateCurrentPage(HomeScreen());
     // });
@@ -31,38 +30,42 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // 必须调用以确保自动保持活动功能正常工作
+    super.build(context); // Ensures the AutomaticKeepAliveClientMixin works
 
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-        color: Color(0xFFFFFF)),
+          color: Color(0xFFFFFF), // Background color for the screen
+        ),
         child: SafeArea(
           child: RefreshIndicator(
-            onRefresh: _refresh,
+            onRefresh: _refresh, // Triggers refresh when pulled down
             child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(), // 使下拉刷新生效
-              padding: EdgeInsets.all(16.0),
+              physics: const AlwaysScrollableScrollPhysics(), // Ensures scroll behavior
+              padding: EdgeInsets.all(16.0), // Padding around the content
               child: Column(
                 children: [
+                  // Header section with Avatar, UserName, and Notification Icon
                   Container(
-                    height: 30.0, // Set the desired height here
+                    height: 35.0, // Set the desired height for the header
                     child: Row(
                       children: [
                         HomeAvatar(),
-                        SizedBox(width: 10.0),
+                        SizedBox(width: 10.0), // Spacing between avatar and username
                         HomeUserName(),
-                        Spacer(), // Add Spacer to push HomeNotificationIcon to the right
+                        Spacer(), // Pushes notification icon to the far right
                         HomeNotificationIcon(),
                       ],
                     ),
                   ),
+                  // History and Account section
                   Row(
                     children: [
                       Spacer(),
                       HomeAccountHistory(),
                     ],
                   ),
+                  // Points and Reward section
                   Row(
                     children: [
                       Expanded(
@@ -75,7 +78,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 20.0), // Spacing between sections
+                  // Rewards heading and View All button
                   Row(
                     children: [
                       Text(
@@ -83,14 +87,14 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFF26101), // Ensure the text is visible on dark background
+                          color: Color(0xFFF26101), // Text color for visibility
                         ),
                       ),
                       Spacer(),
                       HomeRewardViewAll(),
                     ],
                   ),
-                  HomeProductList(),
+                  HomeProductList(), // List of products
                 ],
               ),
             ),

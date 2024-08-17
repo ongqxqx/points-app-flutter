@@ -14,16 +14,20 @@ class ProfileWithSignedInScreen extends StatefulWidget {
 }
 
 class _ProfileWithSignedInScreenState extends State<ProfileWithSignedInScreen> {
+  // Get the currently signed-in user
   final user = FirebaseAuth.instance.currentUser;
 
+  // Stream to listen for user document changes
   Stream<DocumentSnapshot<Map<String, dynamic>>> _userDocumentStream() {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      // Return a stream of the user document from Firestore
       return FirebaseFirestore.instance
           .collection('user_list')
           .doc(user.uid)
           .snapshots();
     } else {
+      // Return an empty stream if no user is signed in
       return Stream.empty();
     }
   }
@@ -35,28 +39,33 @@ class _ProfileWithSignedInScreenState extends State<ProfileWithSignedInScreen> {
         stream: _userDocumentStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            // Display a loading indicator while data is being fetched
             return Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
+            // Display an error message if something went wrong
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (!snapshot.hasData || !snapshot.data!.exists) {
+            // Display a message if no user data is found
             return Center(child: Text('No user data found'));
           }
 
+          // Get user data from the snapshot
           final data = snapshot.data!.data()!;
           final _name = data['name'] ?? '';
           final _avatarID = data['avatarID'] ??
               DateTime.now().millisecondsSinceEpoch.toString();
           final referralCode = user?.uid.substring(0, 5);
           final TextEditingController _referralCodeController =
-              TextEditingController();
+          TextEditingController();
           _referralCodeController.text = referralCode!;
 
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
+                // Display the user's avatar
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: SizedBox(
@@ -81,6 +90,7 @@ class _ProfileWithSignedInScreenState extends State<ProfileWithSignedInScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                // Display the user's name
                 Text(
                   _name,
                   style: Theme.of(context)
@@ -89,9 +99,11 @@ class _ProfileWithSignedInScreenState extends State<ProfileWithSignedInScreen> {
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
+                // Display the referral code
                 ProfileReferralCode(
                     referralCodeController: _referralCodeController),
                 Spacer(),
+                // Display configuration options
                 ProfileConfigureScreen(),
               ],
             ),

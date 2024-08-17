@@ -22,12 +22,13 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
   bool _isButtonDisabled = false;
   int _countdown = 30;
   Timer? _timer;
-  bool _showTextFieldSMS_And_ButtonSignIn = false; // 控制文本字段和按钮的显示状态
+  bool _showTextFieldSMS_And_ButtonSignIn = false; // Controls visibility of SMS code input and verification button
   final user = FirebaseAuth.instance.currentUser;
   final userUID = FirebaseAuth.instance.currentUser?.uid;
   final TextEditingController _phoneNumber = TextEditingController();
   final TextEditingController _email = TextEditingController();
 
+  // Starts the countdown timer for the resend button.
   void _startCountdown() {
     setState(() {
       _isButtonDisabled = true;
@@ -56,6 +57,7 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
     super.dispose();
   }
 
+  // Sends the verification code to the provided phone number.
   static Future<void> sendVerificationCode({
     required String phone,
     required Function errorStep,
@@ -84,6 +86,7 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
     }
   }
 
+  // Links the user's phone number with their Google authentication.
   Future<void> linkPhoneNumberWithGoogleAuth(User user, String smsCode) async {
     try {
       final PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -104,7 +107,7 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
           .doc(user.uid)
           .update({
         'phoneNumber':
-            _selectedCountryCode + _phoneNumberController.text.trim(),
+        _selectedCountryCode + _phoneNumberController.text.trim(),
       });
       Get.back(result: true);
     } on FirebaseAuthException catch (e) {
@@ -122,6 +125,7 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
 
   @override
   Widget build(BuildContext context) {
+    // Builds the UI for binding a phone number to the user's account.
     return Scaffold(
       appBar: AppBar(
         title: Text('bindingPhoneNumber'.tr),
@@ -170,7 +174,7 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
                       style: TextStyle(fontSize: 25),
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly, // 只允许输入数字
+                        FilteringTextInputFormatter.digitsOnly, // Allows only digits
                       ],
                     ),
                   ),
@@ -182,41 +186,40 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
                   onPressed: _isButtonDisabled
                       ? null
                       : () {
-                          final phone = _selectedCountryCode +
-                              _phoneNumberController.text.trim();
-                          sendVerificationCode(
-                            phone: phone,
-                            errorStep: (errorMessage) {
-                              print(errorMessage);
-                              Fluttertoast.showToast(
-                                msg: errorMessage,
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.CENTER,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                            },
-                            nextStep: () {
-                              //print('Verification code sent');
-                              setState(() {
-                                _showTextFieldSMS_And_ButtonSignIn =
-                                    true; // 显示文本字段和按钮
-                              });
-                              Fluttertoast.showToast(
-                                msg: 'verificationCodeSent'.tr,
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.CENTER,
-                                backgroundColor: Colors.green,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                            },
-                          );
-                          _startCountdown();
-                        },
+                    final phone = _selectedCountryCode +
+                        _phoneNumberController.text.trim();
+                    sendVerificationCode(
+                      phone: phone,
+                      errorStep: (errorMessage) {
+                        print(errorMessage);
+                        Fluttertoast.showToast(
+                          msg: errorMessage,
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.CENTER,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      },
+                      nextStep: () {
+                        setState(() {
+                          _showTextFieldSMS_And_ButtonSignIn =
+                          true; // Shows the SMS code input field and verification button
+                        });
+                        Fluttertoast.showToast(
+                          msg: 'verificationCodeSent'.tr,
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.CENTER,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      },
+                    );
+                    _startCountdown();
+                  },
                   child: _isButtonDisabled
-                      ? Text('$_countdown' + 's')
+                      ? Text('$_countdown' + 's') // Show countdown timer when button is disabled
                       : Text('sendVerificationCode'.tr),
                 ),
               ),
@@ -232,7 +235,7 @@ class BindingPhoneNumberState extends State<BindingPhoneNumber> {
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
-                  ], // 只允许输入数字
+                  ], // Allows only digits
                 ),
                 SizedBox(height: 16.0),
                 Center(

@@ -9,18 +9,20 @@ class HomeAccountHistory extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
+        // Navigate to the AccountHistory screen when the button is pressed
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const AccountHistory()),
         );
       },
       child: Text(
+        // Display the translated 'history' text with an arrow
         'history'.tr + '\u2192',
         style: TextStyle(
-          fontFamily: 'Roboto',
-          fontSize: 14,
-          color: Color(0xFFF26101),
-          fontWeight: FontWeight.bold,
+          fontFamily: 'Roboto', // Use the 'Roboto' font
+          fontSize: 14, // Set the font size
+          color: Color(0xFFF26101), // Set the text color
+          fontWeight: FontWeight.bold, // Set the font weight to bold
         ),
       ),
     );

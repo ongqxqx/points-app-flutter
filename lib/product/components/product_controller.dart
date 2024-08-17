@@ -3,84 +3,80 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductController extends GetxController {
-  var selectedCategory = 'hot'.obs;
-  var products = <QueryDocumentSnapshot>[].obs;
-  var categories = <DocumentSnapshot>[].obs;
-  var isLoading = true.obs;
-  var isCategoryLoading = true.obs;
+  var selectedCategory = 'hot'.obs; // Observable to track the selected category
+  var products = <QueryDocumentSnapshot>[].obs; // Observable list to store fetched products
+  var categories = <DocumentSnapshot>[].obs; // Observable list to store fetched categories
+  var isLoading = true.obs; // Observable to track loading state for products
+  var isCategoryLoading = true.obs; // Observable to track loading state for categories
 
   @override
   void onInit() {
     super.onInit();
-    //print("ProductController onInit called");
-    fetchCategories();
-    _checkAuthAndFetchData();
+    fetchCategories(); // Fetch categories when the controller initializes
+    _checkAuthAndFetchData(); // Check authentication status and fetch data
   }
 
   void _checkAuthAndFetchData() async {
-    //print("Checking auth status...");
+    // Check if the user is authenticated
     if (FirebaseAuth.instance.currentUser == null) {
-      //print("No user logged in. Attempting anonymous sign in...");
+      // If no user is logged in, attempt anonymous sign-in
       try {
         await FirebaseAuth.instance.signInAnonymously();
-        //print("Anonymous sign in successful");
       } catch (e) {
-        //print("Error signing in anonymously: $e");
+        // Handle sign-in error
         return;
       }
-    } else {
-      //print("User already signed in");
     }
+    // Fetch categories and products after authentication
     fetchCategories();
     fetchProducts();
   }
 
   void setCategory(String category) {
-    selectedCategory.value = category;
-    fetchProducts();
+    selectedCategory.value = category; // Update the selected category
+    fetchProducts(); // Fetch products based on the selected category
   }
 
   void fetchCategories() {
-    //print("Fetching categories...");
-    isCategoryLoading.value = true;
+    isCategoryLoading.value = true; // Set loading state for categories
     FirebaseFirestore.instance
         .collection('product_category')
         .get()
         .then((snapshot) {
-      //print("Categories fetched. Count: ${snapshot.docs.length}");
-      categories.value = snapshot.docs;
-      isCategoryLoading.value = false;
+      categories.value = snapshot.docs; // Update categories with fetched data
+      isCategoryLoading.value = false; // Set loading state to false
     }).catchError((error) {
-      //print("Error fetching categories: $error");
+      // Handle error while fetching categories
       if (error is FirebaseException) {
-        //print("Firebase error code: ${error.code}");
-        //print("Firebase error message: ${error.message}");
+        // Handle specific Firebase error if necessary
       }
-      isCategoryLoading.value = false;
+      isCategoryLoading.value = false; // Set loading state to false in case of error
     });
   }
 
   void fetchProducts() async {
-    isLoading.value = true;
+    isLoading.value = true; // Set loading state for products
     try {
       QuerySnapshot snapshot;
       if (selectedCategory.value == 'hot') {
+        // Fetch products with 'hot' status if the selected category is 'hot'
         snapshot = await FirebaseFirestore.instance
             .collection('product_list')
             .where('status', isEqualTo: 'hot')
             .get();
       } else {
+        // Fetch products based on the selected category
         snapshot = await FirebaseFirestore.instance
             .collection('product_list')
             .where('category', isEqualTo: selectedCategory.value)
             .get();
       }
-      products.value = snapshot.docs;
+      products.value = snapshot.docs; // Update products with fetched data
     } catch (e) {
-      //print("Error fetching products: $e");
-      products.clear();
+      // Handle error while fetching products
+      products.clear(); // Clear the product list in case of error
     } finally {
-      isLoading.value = false;
+      isLoading.value = false; // Set loading state to false after fetching
     }
   }
 }

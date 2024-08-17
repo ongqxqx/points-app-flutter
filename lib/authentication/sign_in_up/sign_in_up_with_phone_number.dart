@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:points/main.dart';
 import 'package:points/profile/components/account_setting_screen/account_setting_screen.dart';
-
 import '../../navigation/bottom_navigation_screen.dart';
 
 class SignInUpWithPhoneNumber extends StatefulWidget {
@@ -26,8 +25,9 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
   bool _isButtonDisabled = false;
   int _countdown = 30;
   Timer? _timer;
-  bool _showTextFieldSMS_And_ButtonSignIn = false; // 控制文本字段和按钮的显示状态
+  bool _showTextFieldSMS_And_ButtonSignIn = false; // Control visibility of SMS field and sign-in button
 
+  // Starts a countdown timer for re-sending verification code
   void _startCountdown() {
     setState(() {
       _isButtonDisabled = true;
@@ -55,6 +55,7 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
     super.dispose();
   }
 
+  // Sends a verification code to the provided phone number
   static Future<void> sendVerificationCode({
     required String phone,
     required Function errorStep,
@@ -83,6 +84,7 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
     }
   }
 
+  // Verifies the SMS code and signs in the user
   Future<String> verifySmsCode({required String otp}) async {
     try {
       final PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -90,7 +92,7 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
         smsCode: otp,
       );
       final UserCredential userCredential =
-          await _firebaseAuth.signInWithCredential(credential);
+      await _firebaseAuth.signInWithCredential(credential);
       final User? user = userCredential.user;
       if (user != null) {
         await saveUserToFirestore(user);
@@ -110,7 +112,7 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red, // 设置为红色以表示错误
+          backgroundColor: Colors.red, // Set to red for errors
           textColor: Colors.white,
           fontSize: 16.0,
         );
@@ -123,6 +125,7 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
     }
   }
 
+  // Saves user information to Firestore
   Future<void> saveUserToFirestore(User? user) async {
     if (user != null) {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -136,9 +139,9 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
           'registrationTimestamp': FieldValue.serverTimestamp(),
         });
         Get.offAll(() => AccountSettingScreen(
-            isFirstTimeSignIn: true)); // 跳转到 AccountSettingScreen
+            isFirstTimeSignIn: true)); // Navigate to AccountSettingScreen
       } else {
-        Get.offAll(() => MainPage());
+        Get.offAll(() => MainPage()); // Navigate to MainPage
       }
     }
   }
@@ -154,12 +157,13 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
             children: [
               Container(
                 width: 100,
-                height: 70,
+                height: 66,
                 child: InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: 'Country Code',
+                  decoration: InputDecoration(
+                    labelText: 'countryCode'.tr,
                   ),
                   child: DropdownButton<String>(
+                    underline: SizedBox(),
                     value: _selectedCountryCode,
                     icon: SizedBox.shrink(),
                     isExpanded: true,
@@ -173,11 +177,11 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Center(
-                        child: Text(
-                          value,
-                          style:
-                              TextStyle(fontSize: 22, color: Color(0xFFF26101)),
-                        ),
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                                fontSize: 22, color: Color(0xFFF26101)),
+                          ),
                         ),
                       );
                     }).toList(),
@@ -188,12 +192,18 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
               Flexible(
                 child: TextFormField(
                   controller: _phoneNumberController,
-                  decoration: InputDecoration(labelText: 'phoneNumber'.tr),
-                  style:
-                      const TextStyle(fontSize: 25, color: Color(0xFFF26101)),
+                  decoration: InputDecoration(
+                    labelText: 'phoneNumber'.tr,
+                    contentPadding:
+                    EdgeInsets.symmetric(vertical: 8.5),
+                  ),
+                  style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFF26101)),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly, // 只允许输入数字
+                    FilteringTextInputFormatter.digitsOnly, // Allow only numbers
                   ],
                 ),
               ),
@@ -205,75 +215,75 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
               onPressed: _isButtonDisabled
                   ? null
                   : () {
-                      final phone = _selectedCountryCode +
-                          _phoneNumberController.text.trim();
-                      sendVerificationCode(
-                        phone: phone,
-                        errorStep: (errorMessage) {
-                          print(errorMessage);
-                          Fluttertoast.showToast(
-                            msg: errorMessage,
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                        },
-                        nextStep: () {
-                          print('Verification code sent');
-                          setState(() {
-                            _showTextFieldSMS_And_ButtonSignIn =
-                                true; // 显示文本字段和按钮
-                          });
-                          Fluttertoast.showToast(
-                            msg: 'Verification code sent',
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                        },
-                      );
-                      _startCountdown();
-                    },
+                final phone = _selectedCountryCode +
+                    _phoneNumberController.text.trim();
+                sendVerificationCode(
+                  phone: phone,
+                  errorStep: (errorMessage) {
+                    print(errorMessage);
+                    Fluttertoast.showToast(
+                      msg: errorMessage,
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  },
+                  nextStep: () {
+                    print('Verification code sent');
+                    setState(() {
+                      _showTextFieldSMS_And_ButtonSignIn =
+                      true; // Show SMS field and button
+                    });
+                    Fluttertoast.showToast(
+                      msg: 'verificationCodeSent'.tr,
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  },
+                );
+                _startCountdown();
+              },
               style: TextButton.styleFrom(
-                foregroundColor: Colors.white, // 设置按钮文本颜色
-                backgroundColor: Color(0xFFF26101), // 设置按钮背景颜色
+                foregroundColor: Colors.white, // Button text color
+                backgroundColor: Color(0xFFF26101), // Button background color
               ),
               child: _isButtonDisabled
                   ? Text('$_countdown' + 's')
-                  : const Text('Send Verification Code'),
+                  : Text('sendVerificationCode'.tr),
             ),
           ),
           const SizedBox(height: 16.0),
           if (_showTextFieldSMS_And_ButtonSignIn) ...[
             TextFormField(
                 controller: _smsCodeController,
-                decoration: const InputDecoration(
-                  labelText: 'SMS Code',
+                decoration: InputDecoration(
+                  labelText: 'smsCode'.tr,
                 ),
                 style: const TextStyle(fontSize: 25),
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly,
-                ] // 只允许输入数字
-                ),
+                ] // Allow only numbers
+            ),
             const SizedBox(height: 16.0),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
                   final result =
-                      await verifySmsCode(otp: _smsCodeController.text.trim());
+                  await verifySmsCode(otp: _smsCodeController.text.trim());
                   print(result);
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.white, // 设置按钮文本颜色
-                  backgroundColor: Color(0xFFF26101), // 设置按钮背景颜色
+                  foregroundColor: Colors.white, // Button text color
+                  backgroundColor: Color(0xFFF26101), // Button background color
                 ),
-                child: const Text('Sign In'),
+                child: Text('signIn'.tr),
               ),
             ),
           ],

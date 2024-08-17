@@ -13,20 +13,18 @@ import '../translation_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Ensure widgets are initialized before running async code
-  // Initialize Firebase app
-  await Firebase.initializeApp(); // This initializes the default Firebase app
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure widgets are initialized before running async code
+  await Firebase.initializeApp(); // Initialize the default Firebase app
   await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.debug,
-    appleProvider: AppleProvider.appAttest,
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'), // Configure App Check for web
+    androidProvider: AndroidProvider.debug, // Configure App Check for Android
+    appleProvider: AppleProvider.appAttest, // Configure App Check for iOS
   );
   FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.dumpErrorToConsole(details);
+    FlutterError.dumpErrorToConsole(details); // Custom error handling
     //print('Custom error handler: ${details.exception}');
   };
-  runApp(BottomNavigationScreen());
+  runApp(BottomNavigationScreen()); // Start the app with BottomNavigationScreen
 }
 
 class BottomNavigationScreen extends StatelessWidget {
@@ -36,10 +34,10 @@ class BottomNavigationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      translations: TranslationService(),
+      translations: TranslationService(), // Set up internationalization
       locale: TranslationService.locale,
       fallbackLocale: TranslationService.fallbackLocale,
-      home: MainPage(),//(key: mainPageKey),
+      home: MainPage(), // Main page of the app
     );
   }
 }
@@ -54,10 +52,10 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
-  Widget _currentPage = HomeScreen(); // 初始为占位符
-  List<String> _appBarTitles = ['home'.tr, 'scanQR'.tr, 'profile'.tr];
-  bool _isOnboarding = false;
+  int _selectedIndex = 0; // Track the selected index in the bottom navigation bar
+  Widget _currentPage = HomeScreen(); // Default page is HomeScreen
+  List<String> _appBarTitles = ['home'.tr, 'scanQR'.tr, 'profile'.tr]; // Titles for the AppBar
+  bool _isOnboarding = false; // Track if onboarding is completed
 
   // void updateCurrentPage(Widget newPage) {
   //   setState(() {
@@ -68,7 +66,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _currentPage = HomeScreen();
+    _currentPage = HomeScreen(); // Initialize with HomeScreen
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (FirebaseAuth.instance.currentUser == null && !_isOnboarding) {
@@ -84,15 +82,15 @@ class _MainPageState extends State<MainPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  OnboardingSignInUpScreen()));
+                                  OnboardingSignInUpScreen())); // Navigate to sign-in/up screen
                     });
-                    _currentPage = HomeScreen();
-                    _selectedIndex = 0;
+                    _currentPage = HomeScreen(); // Set default page
+                    _selectedIndex = 0; // Reset selected index
                   } else {
-                    _currentPage = HomeScreen();
-                    _selectedIndex = 0; // 重置选中的导航项
+                    _currentPage = HomeScreen(); // Set default page
+                    _selectedIndex = 0; // Reset selected index
                   }
-                  _isOnboarding = true;
+                  _isOnboarding = true; // Mark onboarding as completed
                 });
               },
             ),
@@ -103,42 +101,42 @@ class _MainPageState extends State<MainPage> {
   }
 
   List<SalomonBottomBarItem> get _navBarItems => [
-        SalomonBottomBarItem(
-          icon: Icon(_selectedIndex == 0 ? Icons.home_rounded : Icons.home_outlined),
-          title: Text('home'.tr),
-          selectedColor: Color(0xFFF26101),
-          unselectedColor: Color(0xFF003354),
-        ),
-        SalomonBottomBarItem(
-          icon: Icon(_selectedIndex == 1 ? Icons.qr_code_scanner_rounded : Icons.qr_code_rounded),
-          title: Text('scanQR'.tr),
-          selectedColor: Color(0xFFF26101),
-          unselectedColor: Color(0xFF003354),
-        ),
-        SalomonBottomBarItem(
-          icon: Icon(_selectedIndex == 2 ? Icons.person_rounded : Icons.person_outline_rounded),
-          title: Text('profile'.tr),
-          selectedColor: Color(0xFFF26101),
-          unselectedColor: Color(0xFF003354),
-        ),
-      ];
+    SalomonBottomBarItem(
+      icon: Icon(_selectedIndex == 0 ? Icons.home_rounded : Icons.home_outlined),
+      title: Text('home'.tr),
+      selectedColor: Color(0xFFF26101),
+      unselectedColor: Color(0xFF003354),
+    ),
+    SalomonBottomBarItem(
+      icon: Icon(_selectedIndex == 1 ? Icons.qr_code_scanner_rounded : Icons.qr_code_rounded),
+      title: Text('scanQR'.tr),
+      selectedColor: Color(0xFFF26101),
+      unselectedColor: Color(0xFF003354),
+    ),
+    SalomonBottomBarItem(
+      icon: Icon(_selectedIndex == 2 ? Icons.person_rounded : Icons.person_outline_rounded),
+      title: Text('profile'.tr),
+      selectedColor: Color(0xFFF26101),
+      unselectedColor: Color(0xFF003354),
+    ),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = index; // Update selected index
       switch (index) {
         case 0:
-          _currentPage = HomeScreen();
+          _currentPage = HomeScreen(); // Set HomeScreen for index 0
           break;
         case 1:
-          _currentPage = QRCodeScreen(); // 假设 ScanPage 是您定义的页面
+          _currentPage = QRCodeScreen(); // Set QRCodeScreen for index 1
           break;
         case 2:
           if (FirebaseAuth.instance.currentUser != null &&
               !FirebaseAuth.instance.currentUser!.isAnonymous) {
-            _currentPage = ProfileWithSignedInScreen();
+            _currentPage = ProfileWithSignedInScreen(); // Set ProfileWithSignedInScreen if signed in
           } else {
-            _currentPage = SignInUpScreen(); //ProfileWithoutSignInDart();
+            _currentPage = SignInUpScreen(); // Set SignInUpScreen if not signed in
           }
           break;
       }
@@ -150,16 +148,16 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: _selectedIndex != 0
           ? AppBar(
-              title: Text(_appBarTitles[_selectedIndex].tr),
-            )
-          : null, // Set to null to disable AppBar
-      body: _currentPage,
+        title: Text(_appBarTitles[_selectedIndex].tr),
+      )
+          : null, // AppBar is shown only if selectedIndex is not 0
+      body: _currentPage, // Display the current page
       bottomNavigationBar: SalomonBottomBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: _navBarItems,
-        //backgroundColor: Color(0xFFF26101), // 更改背景颜色
-        duration: Duration(milliseconds: 1500),
+        currentIndex: _selectedIndex, // Current index for the bottom navigation bar
+        onTap: _onItemTapped, // Handle tap events
+        items: _navBarItems, // Navigation bar items
+        //backgroundColor: Color(0xFFF26101), // Uncomment to change the background color
+        duration: Duration(milliseconds: 1500), // Duration for the animation
       ),
     );
   }

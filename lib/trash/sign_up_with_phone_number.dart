@@ -116,7 +116,7 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
                     decoration: const InputDecoration(labelText: 'Phone Number'),
                     style: const TextStyle(fontSize: 24),
                     keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly, // 只允许输入数字
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly,
                     ],
                   ),
                 ),
@@ -143,7 +143,7 @@ class SignInUpWithPhoneNumberState extends State<SignInUpWithPhoneNumber> {
               style: const TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly,] // 只允许输入数字
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly,]
             ),
             const SizedBox(height: 16.0),
             Center(

@@ -23,21 +23,21 @@ class HomeProductList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
             height: 300,
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: CircularProgressIndicator()), // Loading indicator while fetching data
           );
         }
 
         if (snapshot.hasError) {
           return SizedBox(
             height: 300,
-            child: Center(child: Text('Error: ${snapshot.error}')),
+            child: Center(child: Text('Error: ${snapshot.error}')), // Error message if fetching fails
           );
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return SizedBox(
             height: 300,
-            child: Center(child: Text('noProductsAvailable'.tr)),
+            child: Center(child: Text('noProductsAvailable'.tr)), // Message when no products are available
           );
         }
 
@@ -48,35 +48,35 @@ class HomeProductList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 0.7,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
+              crossAxisCount: 2, // Number of columns in grid
+              childAspectRatio: 0.7, // Aspect ratio for each grid item
+              physics: NeverScrollableScrollPhysics(), // Disable scrolling within the GridView
+              shrinkWrap: true, // Adjust height of GridView based on its content
+              mainAxisSpacing: 10, // Spacing between rows
+              crossAxisSpacing: 8, // Spacing between columns
               children: List.generate(products.length, (index) {
                 var product = products[index];
                 return GestureDetector(
                   onTap: () => ProductDetail.showProductDetailDialog(
-                      context, product),
+                      context, product), // Navigate to product detail dialog
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10), // Rounded corners for container
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.5),
-                          spreadRadius: -4,
-                          blurRadius: 3,
-                          offset: Offset(0, 1),
+                          color: Colors.white.withOpacity(0.5), // Shadow color
+                          spreadRadius: -4, // Spread radius of shadow
+                          blurRadius: 3, // Blur radius of shadow
+                          offset: Offset(0, 1), // Offset of shadow
                         ),
                       ],
                     ),
                     child: Card(
-                      color: Color(0xFFD9E8F5),
-                      elevation: 5,
-                      shadowColor: Colors.white,
+                      color: Color(0xFFD9E8F5), // Card background color
+                      elevation: 5, // Elevation of card
+                      shadowColor: Colors.white, // Shadow color of card
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10), // Rounded corners for card
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,12 +87,12 @@ class HomeProductList extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 16.0),
                               child: Center(
                                 child: AspectRatio(
-                                  aspectRatio: 1,
+                                  aspectRatio: 1, // Aspect ratio for image
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(10), // Rounded corners for image
                                     child: Image.network(
-                                      product['imageURL'],
-                                      fit: BoxFit.cover,
+                                      product['imageURL'], // Product image
+                                      fit: BoxFit.cover, // Fit mode for image
                                     ),
                                   ),
                                 ),
@@ -109,23 +109,23 @@ class HomeProductList extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '${product['name']}',
+                                    '${product['name']}', // Product name
                                     style: TextStyle(
                                         color: Color(0xFF003354),
                                         fontSize: 16),
                                   ),
                                   Text(
-                                    '${product['pointToClaim']} ${('pts'.tr)}',
+                                    '${product['pointToClaim']} ${('pts'.tr)}', // Points required to claim
                                     style: TextStyle(
                                       color: Color(0xFF003354),
                                       fontSize: 16,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  SizedBox(height: 8), // Space between text widgets
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      '${product['quantity']} ${('lefts'.tr)}',
+                                      '${product['quantity']} ${('lefts'.tr)}', // Quantity left
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF91BED4),

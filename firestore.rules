@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 主规则：允许已认证用户（包括匿名用户）访问
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // 允许已认证用户（包括匿名用户）读取 product_category
+    match /product_category/{document=**} {
+      allow read: if request.auth != null;
+    }
+    
+    // 允许已认证用户（包括匿名用户）读取 product_list
+    match /product_list/{document=**} {
+      allow read: if request.auth != null;
+    }
+    
+    // admin_list 的特殊规则保持不变
+    match /admin_list/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}

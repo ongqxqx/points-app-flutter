@@ -23,7 +23,7 @@ class _HomeUserNameState extends State<HomeUserName> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.isAnonymous) {
       setState(() {
-        displayName = 'anonymousUser'.tr;
+        displayName = 'anonymousUser'.tr; // Set display name for anonymous users
       });
     } else {
       try {
@@ -35,12 +35,12 @@ class _HomeUserNameState extends State<HomeUserName> {
         if (docSnapshot.exists) {
           final data = docSnapshot.data();
           setState(() {
-            displayName = data?['name'] ?? 'loading'.tr;
+            displayName = data?['name'] ?? 'loading'.tr; // Set display name or 'loading' text
           });
         }
       } catch (e) {
         setState(() {
-          displayName = 'Error: $e';
+          displayName = 'Error: $e'; // Display error message if any
         });
       }
     }
@@ -52,10 +52,10 @@ class _HomeUserNameState extends State<HomeUserName> {
       child: Text(
         displayName,
         style: TextStyle(
-          fontFamily: 'Roboto',
-          fontSize: 18,
-          color: Color(0xFFF26101),
-          fontWeight: FontWeight.bold,
+          fontFamily: 'Roboto', // Font family for text
+          fontSize: 18, // Font size for text
+          color: Color(0xFFF26101), // Text color
+          fontWeight: FontWeight.bold, // Font weight
         ),
       ),
     );

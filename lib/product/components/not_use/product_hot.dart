@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'product_detail.dart';
+import '../product_detail.dart';
 
 class ProductHot extends StatelessWidget {
   const ProductHot({Key? key}) : super(key: key);

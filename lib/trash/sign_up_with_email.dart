@@ -13,9 +13,9 @@ class _SignUpWithEmailDartState extends State<SignUpWithEmailDart> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-    TextEditingController(); // 添加确认密码控制器
-    bool _obscurePassword = true; // 用于控制密码显示或隐藏
-    bool _obscureConfirmPassword = true; // 用于控制确认密码显示或隐藏
+    TextEditingController();
+    bool _obscurePassword = true;
+    bool _obscureConfirmPassword = true;
 
   Future<void> _signUpWithEmailAndPassword() async {
     try {
@@ -24,13 +24,10 @@ class _SignUpWithEmailDartState extends State<SignUpWithEmailDart> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-        // 注册成功后的处理逻辑，例如跳转到下一个页面
+
       }
     } catch (error) {
-      // 处理注册过程中出现的错误
       print('Error signing up: $error');
-      // 显示错误信息给用户
-      // 例如：显示一个SnackBar或者弹出一个对话框
     }
   }
 
@@ -38,7 +35,6 @@ class _SignUpWithEmailDartState extends State<SignUpWithEmailDart> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      // Inherit the theme from main.dart
       data: Theme.of(context),
       child: Scaffold(
         appBar: AppBar(
@@ -69,7 +65,7 @@ class _SignUpWithEmailDartState extends State<SignUpWithEmailDart> {
                 const SizedBox(height: 16.0),
                 TextFormField(
                   controller: _passwordController,
-                  obscureText: _obscurePassword, // 控制密码显示或隐藏
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     suffixIcon: IconButton(
@@ -95,7 +91,7 @@ class _SignUpWithEmailDartState extends State<SignUpWithEmailDart> {
                 const SizedBox(height: 16.0),
                 TextFormField(
                   controller: _confirmPasswordController,
-                  obscureText: _obscureConfirmPassword, // 控制确认密码显示或隐藏
+                  obscureText: _obscureConfirmPassword,
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
                     suffixIcon: IconButton(

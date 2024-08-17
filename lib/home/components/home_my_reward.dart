@@ -7,14 +7,15 @@ import 'package:points/home/components/home_my_reward_screen.dart';
 class HomeMyReward extends StatelessWidget {
   const HomeMyReward({Key? key}) : super(key: key);
 
+  // Asynchronously fetch the count of rewards for the current user
   Future<int> _getRewardCount() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return 0; // 如果没有用户，则返回0
+      return 0; // Return 0 if no user is logged in
     }
 
     if (user.isAnonymous) {
-      return -1; // 匿名用户时返回特殊值
+      return -1; // Return special value for anonymous users
     }
 
     final rewardsSnapshot = await FirebaseFirestore.instance
@@ -25,10 +26,10 @@ class HomeMyReward extends StatelessWidget {
     if (rewardsSnapshot.exists) {
       final rewardsData = rewardsSnapshot.data();
       if (rewardsData != null) {
-        return rewardsData.keys.length;
+        return rewardsData.keys.length; // Count the number of rewards
       }
     }
-    return 0; // 如果没有奖励数据，则返回0
+    return 0; // Return 0 if no rewards data exists
   }
 
   @override
@@ -38,7 +39,7 @@ class HomeMyReward extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeMyRewardScreen(),
+            builder: (context) => HomeMyRewardScreen(), // Navigate to HomeMyRewardScreen on tap
           ),
         );
       },
@@ -58,23 +59,23 @@ class HomeMyReward extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'myRewards'.tr,
+              'myRewards'.tr, // Display the translated 'myRewards' text
               style: TextStyle(color: Colors.white),
             ),
             Expanded(
               child: Align(
                 alignment: Alignment.centerRight,
                 child: FutureBuilder<int>(
-                  future: _getRewardCount(),
+                  future: _getRewardCount(), // Fetch reward count asynchronously
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return CircularProgressIndicator(
-                        color: Colors.white,
+                        color: Colors.white, // Show a loading indicator while fetching data
                       );
                     }
                     if (snapshot.hasError) {
                       return Text(
-                        'Error',
+                        'Error', // Display an error message if there's an issue
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -84,7 +85,7 @@ class HomeMyReward extends StatelessWidget {
                     }
                     if (snapshot.data == -1) {
                       return Text(
-                        '--',
+                        '--', // Display '--' for anonymous users
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -93,7 +94,7 @@ class HomeMyReward extends StatelessWidget {
                       );
                     }
                     return Text(
-                      snapshot.data?.toString() ?? '0',
+                      snapshot.data?.toString() ?? '0', // Display reward count or default to '0'
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,

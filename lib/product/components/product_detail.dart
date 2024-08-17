@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:points/onboard/onboarding_sign_in_up_screen.dart';
 
 class ProductDetail {
+  // Method to show the product detail dialog
   static void showProductDetailDialog(
       BuildContext context, DocumentSnapshot product) {
     showDialog(
@@ -22,51 +23,52 @@ class ProductDetail {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Row with points display and close button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         FutureBuilder<String>(
-                          future: _getUserPoint(),
+                          future: _getUserPoint(), // Fetches user's points
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return CircularProgressIndicator();
+                              return CircularProgressIndicator(); // Shows loading indicator
                             }
                             if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
                             }
                             return Text(snapshot.data ?? 'loading'.tr,
-                                style: TextStyle(fontSize: 26));
+                                style: TextStyle(fontSize: 26)); // Displays points or loading text
                           },
                         ),
                         IconButton(
                           icon: Icon(Icons.close, size: 30.0),
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () => Navigator.of(context).pop(), // Closes the dialog
                         ),
                       ],
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                    // Displays the product image
                     Center(
                       child: Container(
-                        width:
-                            MediaQuery.of(context).size.width * 0.5, // 控制图片的宽度
+                        width: MediaQuery.of(context).size.width * 0.5, // Controls image width
                         constraints: BoxConstraints(
-                          maxHeight:
-                              MediaQuery.of(context).size.height * 0.3, // 最大高度
+                          maxHeight: MediaQuery.of(context).size.height * 0.3, // Sets max height
                         ),
                         child: AspectRatio(
-                          aspectRatio: 1, // 1:1的宽高比
+                          aspectRatio: 1, // Maintains 1:1 aspect ratio
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10), // 圆角半径
+                            borderRadius: BorderRadius.circular(10), // Adds rounded corners
                             child: Image.network(
                               product['imageURL'],
-                              fit: BoxFit.cover, // 填充方式
+                              fit: BoxFit.cover, // Fills the container
                             ),
                           ),
                         ),
                       ),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                    // Displays the product name
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -79,11 +81,12 @@ class ProductDetail {
                       ],
                     ),
                     SizedBox(height: 10),
+                    // Displays points and redeem button
                     Row(children: [
                       Text(
-                        '${product['pointToClaim']} ${'pts'.tr}',                        style: TextStyle(
+                        '${product['pointToClaim']} ${'pts'.tr}',
+                        style: TextStyle(
                           fontSize: 20,
-                          //fontWeight: FontWeight.bold,
                         ),
                       ),
                       Spacer(),
@@ -91,24 +94,23 @@ class ProductDetail {
                         alignment: Alignment.centerRight,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
-                            _showRedemptionDialog(context, product);
+                            Navigator.of(context).pop(); // Closes the product detail dialog
+                            _showRedemptionDialog(context, product); // Opens the redemption dialog
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFF26101), // 设置背景颜色
-                            foregroundColor: Color(0xFFFFFFFF), // 设置文本颜色
+                            backgroundColor: Color(0xFFF26101), // Button background color
+                            foregroundColor: Color(0xFFFFFFFF), // Button text color
                             padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10), // 可选：设置内边距
+                                horizontal: 20, vertical: 10), // Button padding
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(10), // 可选：设置圆角
+                              borderRadius: BorderRadius.circular(10), // Button border radius
                             ),
                           ),
                           child: Text(
                             'confirmRedeem'.tr,
                             style: TextStyle(
-                              fontSize: 16, // 可选：设置字体大小
-                              fontWeight: FontWeight.bold, // 可选：设置字体粗细
+                              fontSize: 16, // Button text size
+                              fontWeight: FontWeight.bold, // Button text weight
                             ),
                           ),
                         ),
@@ -124,6 +126,7 @@ class ProductDetail {
     );
   }
 
+  // Method to get user points from Firestore
   static Future<String> _getUserPoint() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.isAnonymous) {
@@ -143,6 +146,7 @@ class ProductDetail {
     }
   }
 
+  // Method to show the redemption dialog
   static void _showRedemptionDialog(
       BuildContext context, DocumentSnapshot product) {
     final user = FirebaseAuth.instance.currentUser;
@@ -151,13 +155,13 @@ class ProductDetail {
       context: context,
       builder: (BuildContext dialogContext) {
         if (user == null || user.isAnonymous) {
-          // 用户未登录或是匿名用户
+          // If user is not logged in or is anonymous
           return AlertDialog(
             title: Text('signInRequired'.tr),
             content: Text('pleaseSignInToContinue'.tr),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
+                onPressed: () => Navigator.of(dialogContext).pop(), // Closes the dialog
                 child: Text('cancel'.tr),
               ),
               ElevatedButton(
@@ -167,14 +171,14 @@ class ProductDetail {
                 ),
                 onPressed: () {
                   Get.back(); // Close the dialog
-                  Get.to(() => OnboardingSignInUpScreen());
+                  Get.to(() => OnboardingSignInUpScreen()); // Navigate to sign in/up screen
                 },
                 child: Text('pleaseSignIn'.tr),
               ),
             ],
           );
         } else {
-          // 用户已登录
+          // If user is logged in
           return FutureBuilder<DocumentSnapshot>(
             future: FirebaseFirestore.instance
                 .collection('user_list')
@@ -184,16 +188,16 @@ class ProductDetail {
                 AsyncSnapshot<DocumentSnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return AlertDialog(
-                  content: Center(child: CircularProgressIndicator()),
+                  content: Center(child: CircularProgressIndicator()), // Shows loading indicator
                 );
               }
               if (snapshot.hasError) {
                 return AlertDialog(
                   title: Text('error'.tr),
-                  content: Text('failedToObtainUserPoints,PleaseTryAgainLater'.tr),
+                  content: Text('failedToObtainUserPoints,PleaseTryAgainLater'.tr), // Error message
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.of(dialogContext).pop(),
+                      onPressed: () => Navigator.of(dialogContext).pop(), // Closes the dialog
                       child: Text('confirm'.tr),
                     ),
                   ],
@@ -204,6 +208,7 @@ class ProductDetail {
                 int currentPoint = 0;
                 int pointToClaim = 0;
 
+                // Parse user's current points
                 try {
                   currentPoint =
                       int.parse(userData?['point']?.toString() ?? '0');
@@ -221,6 +226,7 @@ class ProductDetail {
                   );
                 }
 
+                // Parse product's points required for redemption
                 try {
                   pointToClaim =
                       int.parse(product['pointToClaim']?.toString() ?? '0');
@@ -243,30 +249,30 @@ class ProductDetail {
                   title: Text('confirmRedeem'.tr),
                   content: remainingPoint >= 0
                       ? Text('${'willDeduct'.tr} $pointToClaim ${'pts'.tr}, ${'remainingPtsAfterRedeem'.tr}: $remainingPoint ${'pts'.tr}')
-                      : Text('${'insufficientPtsToRedeemThisItem'.tr}'),
+                      : Text('${'insufficientPtsToRedeemThisItem'.tr}'), // Insufficient points message
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.of(dialogContext).pop(),
+                      onPressed: () => Navigator.of(dialogContext).pop(), // Closes the dialog
                       child: Text('cancel'.tr),
                     ),
                     if (remainingPoint >= 0)
                       ElevatedButton(
                         onPressed: () {
                           _performRedemption(dialogContext, user.uid,
-                              pointToClaim, remainingPoint);
+                              pointToClaim, remainingPoint); // Perform the redemption
                         },
                         child: Text('confirm'.tr),
                       ),
                   ],
                 );
               }
-              // 返回默认的对话框
+              // Default dialog if data is not available
               return AlertDialog(
                 title: Text('error'.tr),
                 content: Text('unableToRetrieveUserData'.tr),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    onPressed: () => Navigator.of(dialogContext).pop(), // Closes the dialog
                     child: Text('confirm'.tr),
                   ),
                 ],
@@ -278,6 +284,7 @@ class ProductDetail {
     );
   }
 
+  // Method to perform the redemption and update user points in Firestore
   static void _performRedemption(BuildContext context, String userId,
       int productPoint, int remainingPoint) {
     if (remainingPoint < 0) {
@@ -288,16 +295,16 @@ class ProductDetail {
     }
 
     FirebaseFirestore.instance.collection('user_list').doc(userId).update({
-      'point': remainingPoint, // 直接使用 int 类型
+      'point': remainingPoint, // Update user's points
     }).then((_) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${'redeemSuccessful'.tr} ${'deducted'.tr} $productPoint ${'pts'.tr}, ${'remaining'.tr} $remainingPoint ${'pts'.tr}.')),
+        SnackBar(content: Text('${'redeemSuccessful'.tr} ${'deducted'.tr} $productPoint ${'pts'.tr}, ${'remaining'.tr} $remainingPoint ${'pts'.tr}.')), // Success message
       );
     }).catchError((error) {
       print('Error updating user point: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('redemptionFailed,PleaseTryAgainLater'.tr)),
+        SnackBar(content: Text('redemptionFailed,PleaseTryAgainLater'.tr)), // Failure message
       );
     });
   }

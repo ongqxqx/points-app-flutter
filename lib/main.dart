@@ -13,7 +13,19 @@ import 'translation_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Get.put(ProductController());
+  // Check if there's a current user and if they are anonymous
+  final User? currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser != null && currentUser.isAnonymous) {
+    try {
+      // Delete the anonymous user
+      await currentUser.delete();
+      print('Anonymous user deleted');
+    } catch (e) {
+      // Handle any errors that occur during user deletion
+      print('Error deleting anonymous user: $e');
+    }
+  }
+  //Get.put(ProductController());
   runApp(MyApp());
 }
 
@@ -52,11 +64,10 @@ class InitialRouter extends StatelessWidget {
   }
 
   Future<Widget> _determineInitialRoute() async {
-    await Future.delayed(Duration(seconds: 2)); // 给予一些时间让Firebase完全初始化
+    await Future.delayed(Duration(seconds: 2));
 
     final User? currentUser = FirebaseAuth.instance.currentUser;
 
-    // 避免自动注册匿名用户
     if (currentUser == null || currentUser.isAnonymous) {
       return OnboardingScreen(onCompleted: _handleOnboardingCompleted);
     }
@@ -65,17 +76,14 @@ class InitialRouter extends StatelessWidget {
     if (!isOnboardingCompleted) {
       return OnboardingScreen(onCompleted: _handleOnboardingCompleted);
     } else {
-      // 获取当前用户
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // 获取用户文档
         final userDoc = await FirebaseFirestore.instance
             .collection('user_list')
             .doc(user.uid)
             .get();
 
         if (userDoc.exists) {
-          // 检查用户文档中是否存在指定字段
           final data = userDoc.data();
           if (data != null) {
             final name = data['name'];
@@ -87,10 +95,11 @@ class InitialRouter extends StatelessWidget {
             }
           }
         }
-
+        Get.put(ProductController());
         return MainPage();
       }
     }
+    Get.put(ProductController());
     return MainPage();
   }
 
@@ -105,7 +114,7 @@ class InitialRouter extends StatelessWidget {
   Future<bool> _checkIfOnboardingCompleted() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-        //
+      //
       return true;
     }
     return false;
