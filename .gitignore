@@ -1,14 +1,35 @@
 # Flutter/Dart specific
-.dart_tool/
+# Flutter/Dart/Pub related
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-build/
 pubspec.lock
-*.dart_tool/
 *.pub/
-*.swp
 *.apk
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.pub-cache/
+.pub/
+build/
+.dart_tool/
+*.dart_tool/
+
+# Firebase
+firebase.json
+firebase_options.dart
+
+# Google services
+ios/Runner/GoogleService-Info.plist
+android/app/google-services.json
+
+# Private keys and certificates
+*.pem
+*.crt
+*.key
+
+# Local development configurations
+.env
+.secrets
 
 # Android specific
 android/.gradle/
@@ -19,12 +40,35 @@ android/local.properties
 # iOS specific
 ios/Flutter/.symlinks/
 ios/Pods/
-ios/Runner/GoogleService-Info.plist
 
 # IDEs
-.idea/
 .vscode/
-*.iml
 
-# Logs
+# Miscellaneous
+*.class
 *.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
