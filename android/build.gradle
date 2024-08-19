@@ -1,14 +1,3 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.0' // 使用最新的插件版本
-        // 其他 classpath 依赖
-    }
-}
-
 allprojects {
     repositories {
         google()
@@ -18,11 +7,24 @@ allprojects {
 
 rootProject.buildDir = "../build"
 subprojects {
+/// Temporary fix for apk release build failing after upgrading to flutter 3.24.0
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+                project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 34
+                buildToolsVersion "34.0.0"
+            }
+        }
+    }
+    ///
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+    ///
+    project.evaluationDependsOn(':app')
 }
-subprojects {
-    project.evaluationDependsOn(":app")
-}
+//subprojects {
+//    project.evaluationDependsOn(":app")
+//}
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
